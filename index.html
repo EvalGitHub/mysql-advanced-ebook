@@ -6,7 +6,7 @@
 <title>MySQL高级篇 - 尚硅谷宋红康</title>
 <style>
 :root {
-  --sidebar-width: 280px;
+  --sidebar-width: 320px;
   --primary: #1a73e8;
   --primary-dark: #1557b0;
   --bg: #ffffff;
@@ -58,6 +58,54 @@ body {
   margin-top: 4px;
 }
 
+.search-box {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.search-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.search-tab {
+  flex: 1;
+  padding: 6px 0;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-light);
+}
+
+.search-tab.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.search-box input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-box input:focus {
+  border-color: var(--primary);
+}
+
+.search-status {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 6px;
+  min-height: 18px;
+}
+
 .toc {
   padding: 10px 0;
 }
@@ -92,6 +140,62 @@ body {
   font-weight: 500;
 }
 
+.search-results {
+  padding: 8px 0;
+}
+
+.search-results ul {
+  list-style: none;
+}
+
+.search-result {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.search-result:hover {
+  background: rgba(26, 115, 232, 0.06);
+}
+
+.search-result-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.search-result-meta {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-bottom: 4px;
+}
+
+.search-result-snippet {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.search-result-snippet mark {
+  background: #ffeb3b;
+  color: #000;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.search-empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-light);
+  font-size: 13px;
+}
+
 /* Main content */
 .main {
   margin-left: var(--sidebar-width);
@@ -123,6 +227,12 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 8px;
+}
+
+.page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .page-img {
@@ -160,6 +270,7 @@ body {
 }
 
 @media (max-width: 768px) {
+  :root { --sidebar-width: 280px; }
   .sidebar {
     transform: translateX(-100%);
   }
@@ -183,23 +294,6 @@ body {
   background: #ccc;
   border-radius: 3px;
 }
-
-/* Search */
-.search-box {
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--border);
-}
-.search-box input {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 14px;
-  outline: none;
-}
-.search-box input:focus {
-  border-color: var(--primary);
-}
 </style>
 </head>
 <body>
@@ -212,9 +306,14 @@ body {
     <p>尚硅谷 · 宋红康</p>
   </div>
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="搜索章节..." oninput="filterTOC(this.value)">
+    <div class="search-tabs">
+      <button class="search-tab active" data-mode="toc" onclick="setSearchMode('toc')">按章节</button>
+      <button class="search-tab" data-mode="fulltext" onclick="setSearchMode('fulltext')">全文检索</button>
+    </div>
+    <input type="text" id="searchInput" placeholder="搜索章节..." oninput="onSearchInput(this.value)">
+    <div class="search-status" id="searchStatus"></div>
   </div>
-  <div class="toc">
+  <div class="toc" id="tocPanel">
     <ul id="tocList">
       <li><a href="#chapter-1" data-chapter="1">第01章_Linux下MySQL的安装与使用</a></li>
 <li><a href="#chapter-2" data-chapter="2">第02章_MySQL的数据目录</a></li>
@@ -237,6 +336,9 @@ body {
 <li><a href="#chapter-99" data-chapter="99">写在最后</a></li>
     </ul>
   </div>
+  <div class="search-results" id="searchResultsPanel" style="display:none;">
+    <ul id="searchResultsList"></ul>
+  </div>
 </nav>
 
 <main class="main" id="content">
@@ -246,14 +348,148 @@ body {
 <script>
 const contentEl = document.getElementById('content');
 const tocLinks = document.querySelectorAll('.toc a');
+const searchInput = document.getElementById('searchInput');
+const searchStatus = document.getElementById('searchStatus');
+const tocPanel = document.getElementById('tocPanel');
+const searchResultsPanel = document.getElementById('searchResultsPanel');
+const searchResultsList = document.getElementById('searchResultsList');
+const searchTabs = document.querySelectorAll('.search-tab');
+
+let searchMode = 'toc';
+let searchIndex = null;
+let searchIndexLoading = false;
+
+function setSearchMode(mode) {
+  searchMode = mode;
+  searchTabs.forEach(tab => tab.classList.toggle('active', tab.dataset.mode === mode));
+  searchInput.placeholder = mode === 'toc' ? '搜索章节...' : '搜索全文内容...';
+  searchStatus.textContent = '';
+
+  if (mode === 'toc') {
+    tocPanel.style.display = '';
+    searchResultsPanel.style.display = 'none';
+    filterTOC(searchInput.value);
+  } else {
+    tocPanel.style.display = 'none';
+    searchResultsPanel.style.display = '';
+    onSearchInput(searchInput.value);
+  }
+}
 
 function filterTOC(query) {
   const items = document.querySelectorAll('#tocList li');
-  const q = query.toLowerCase();
+  const q = query.toLowerCase().trim();
   items.forEach(li => {
     const text = li.textContent.toLowerCase();
     li.style.display = text.includes(q) ? '' : 'none';
   });
+}
+
+async function loadSearchIndex() {
+  if (searchIndex) return searchIndex;
+  if (searchIndexLoading) return null;
+  searchIndexLoading = true;
+  searchStatus.textContent = '正在加载搜索索引...';
+  try {
+    const resp = await fetch('assets/search-index.json');
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    searchIndex = await resp.json();
+    searchStatus.textContent = '索引加载完成，共 ' + searchIndex.entries.length + ' 页';
+    return searchIndex;
+  } catch (err) {
+    searchStatus.textContent = '索引加载失败：' + err.message;
+    return null;
+  } finally {
+    searchIndexLoading = false;
+  }
+}
+
+function highlightTerms(text, terms) {
+  let result = text;
+  for (const term of terms) {
+    const re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\]/g, '\$&') + ')', 'gi');
+    result = result.replace(re, '<mark>$1</mark>');
+  }
+  return result;
+}
+
+function buildSnippet(text, terms) {
+  const lower = text.toLowerCase();
+  let pos = -1;
+  for (const term of terms) {
+    const idx = lower.indexOf(term);
+    if (idx !== -1 && (pos === -1 || idx < pos)) pos = idx;
+  }
+  if (pos === -1) pos = 0;
+  const start = Math.max(0, pos - 40);
+  const end = Math.min(text.length, pos + 140);
+  let snippet = text.slice(start, end);
+  if (start > 0) snippet = '…' + snippet;
+  if (end < text.length) snippet = snippet + '…';
+  return highlightTerms(snippet, terms);
+}
+
+function renderSearchResults(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) {
+    searchResultsList.innerHTML = '<li class="search-empty">输入关键词搜索全书内容</li>';
+    searchStatus.textContent = '';
+    return;
+  }
+  const terms = q.split(/\s+/).filter(Boolean);
+  const results = [];
+  for (const entry of searchIndex.entries) {
+    const text = entry.text.toLowerCase();
+    if (terms.every(t => text.includes(t))) {
+      results.push({
+        chapter: entry.chapter,
+        title: entry.title,
+        page: entry.page,
+        snippet: buildSnippet(entry.text, terms)
+      });
+    }
+  }
+
+  if (results.length === 0) {
+    searchResultsList.innerHTML = '<li class="search-empty">未找到匹配内容</li>';
+    searchStatus.textContent = '0 条结果';
+    return;
+  }
+
+  const top = results.slice(0, 50);
+  searchResultsList.innerHTML = top.map(r => `
+    <li class="search-result" onclick="onSearchResultClick(${r.chapter}, ${r.page})">
+      <div class="search-result-title">${escapeHtml(r.title)}</div>
+      <div class="search-result-meta">第 ${r.page + 1} 页</div>
+      <div class="search-result-snippet">${r.snippet}</div>
+    </li>
+  `).join('');
+  searchStatus.textContent = top.length + (results.length > top.length ? ' / ' + results.length : '') + ' 条结果';
+}
+
+function escapeHtml(str) {
+  return str.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+async function onSearchInput(value) {
+  if (searchMode === 'toc') {
+    filterTOC(value);
+    return;
+  }
+  if (!searchIndex) {
+    const loaded = await loadSearchIndex();
+    if (!loaded) return;
+  }
+  renderSearchResults(value);
+}
+
+async function onSearchResultClick(chapterNum, pageNum) {
+  await loadChapter(chapterNum);
+  const pageEl = document.getElementById('page-' + pageNum);
+  if (pageEl) {
+    pageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  document.querySelector('.sidebar').classList.remove('open');
 }
 
 function setActiveChapter(num) {
