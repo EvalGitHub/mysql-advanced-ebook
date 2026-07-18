@@ -393,8 +393,10 @@ async function loadSearchIndex() {
   try {
     const resp = await fetch('assets/search-index.json');
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    searchIndex = await resp.json();
-    searchStatus.textContent = '索引加载完成，共 ' + searchIndex.entries.length + ' 页';
+    const blob = await resp.blob();
+    const searchIndexSize = blob.size;
+    searchIndex = JSON.parse(await blob.text());
+    searchStatus.textContent = '索引加载完成，共 ' + searchIndex.entries.length + ' 页（约 ' + Math.round(searchIndexSize / 1024) + ' KB）';
     return searchIndex;
   } catch (err) {
     searchStatus.textContent = '索引加载失败：' + err.message;
@@ -407,7 +409,7 @@ async function loadSearchIndex() {
 function highlightTerms(text, terms) {
   let result = text;
   for (const term of terms) {
-    const re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\]/g, '\$&') + ')', 'gi');
+    const re = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\]]/g, '\\$&') + ')', 'gi');
     result = result.replace(re, '<mark>$1</mark>');
   }
   return result;
@@ -438,14 +440,15 @@ function renderSearchResults(query) {
   }
   const terms = q.split(/\s+/).filter(Boolean);
   const results = [];
+  const titles = searchIndex.titles || {};
   for (const entry of searchIndex.entries) {
-    const text = entry.text.toLowerCase();
+    const text = entry[2].toLowerCase();
     if (terms.every(t => text.includes(t))) {
       results.push({
-        chapter: entry.chapter,
-        title: entry.title,
-        page: entry.page,
-        snippet: buildSnippet(entry.text, terms)
+        chapter: entry[0],
+        title: titles[entry[0]] || ('章节 ' + entry[0]),
+        page: entry[1],
+        snippet: buildSnippet(entry[2], terms)
       });
     }
   }
@@ -457,13 +460,29 @@ function renderSearchResults(query) {
   }
 
   const top = results.slice(0, 50);
-  searchResultsList.innerHTML = top.map(r => `
-    <li class="search-result" onclick="onSearchResultClick(${r.chapter}, ${r.page})">
-      <div class="search-result-title">${escapeHtml(r.title)}</div>
-      <div class="search-result-meta">第 ${r.page + 1} 页</div>
-      <div class="search-result-snippet">${r.snippet}</div>
-    </li>
-  `).join('');
+  searchResultsList.innerHTML = '';
+  for (const r of top) {
+    const li = document.createElement('li');
+    li.className = 'search-result';
+    li.onclick = () => onSearchResultClick(r.chapter, r.page);
+
+    const titleDiv = document.createElement('div');
+    titleDiv.className = 'search-result-title';
+    titleDiv.textContent = r.title;
+
+    const metaDiv = document.createElement('div');
+    metaDiv.className = 'search-result-meta';
+    metaDiv.textContent = '第 ' + (r.page + 1) + ' 页';
+
+    const snippetDiv = document.createElement('div');
+    snippetDiv.className = 'search-result-snippet';
+    snippetDiv.innerHTML = r.snippet;
+
+    li.appendChild(titleDiv);
+    li.appendChild(metaDiv);
+    li.appendChild(snippetDiv);
+    searchResultsList.appendChild(li);
+  }
   searchStatus.textContent = top.length + (results.length > top.length ? ' / ' + results.length : '') + ' 条结果';
 }
 
@@ -471,16 +490,25 @@ function escapeHtml(str) {
   return str.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 }
 
+let searchDebounceTimer = null;
+
 async function onSearchInput(value) {
   if (searchMode === 'toc') {
     filterTOC(value);
     return;
   }
-  if (!searchIndex) {
-    const loaded = await loadSearchIndex();
-    if (!loaded) return;
+  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+  if (!value.trim()) {
+    renderSearchResults('');
+    return;
   }
-  renderSearchResults(value);
+  searchDebounceTimer = setTimeout(async () => {
+    if (!searchIndex) {
+      const loaded = await loadSearchIndex();
+      if (!loaded) return;
+    }
+    renderSearchResults(value);
+  }, 250);
 }
 
 async function onSearchResultClick(chapterNum, pageNum) {
