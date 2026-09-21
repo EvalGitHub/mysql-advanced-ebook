@@ -240,6 +240,14 @@ body {
   height: auto;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: #f1f3f4;
+  opacity: 1;
+  transition: opacity .18s ease;
+}
+
+.page-img[data-src] {
+  color: transparent;
+  opacity: .35;
 }
 
 .loading, .error {
@@ -358,6 +366,37 @@ const searchTabs = document.querySelectorAll('.search-tab');
 let searchMode = 'toc';
 let searchIndex = null;
 let searchIndexLoading = false;
+let pageImageObserver = null;
+
+function activatePageImage(img, priority = 'auto') {
+  if (!img.dataset.src) return;
+  img.loading = 'eager';
+  img.fetchPriority = priority;
+  img.src = img.dataset.src;
+  img.removeAttribute('data-src');
+}
+
+function setupPageImages() {
+  if (pageImageObserver) pageImageObserver.disconnect();
+  const images = Array.from(contentEl.querySelectorAll('img.page-img[data-src]'));
+  if (!images.length) return;
+
+  // Render the first page immediately; defer the rest until they approach the viewport.
+  activatePageImage(images.shift(), 'high');
+  if (!('IntersectionObserver' in window)) {
+    images.forEach(img => activatePageImage(img));
+    return;
+  }
+
+  pageImageObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      activatePageImage(entry.target);
+      pageImageObserver.unobserve(entry.target);
+    });
+  }, { rootMargin: '1200px 0px', threshold: 0.01 });
+  images.forEach(img => pageImageObserver.observe(img));
+}
 
 function setSearchMode(mode) {
   searchMode = mode;
@@ -539,12 +578,14 @@ function getInitialChapterNum() {
 
 async function loadChapter(num) {
   if (!num) return;
+  if (pageImageObserver) pageImageObserver.disconnect();
   contentEl.innerHTML = '<div class="loading">正在加载章节内容...</div>';
   try {
     const response = await fetch(chapterUrl(num));
     if (!response.ok) throw new Error('HTTP ' + response.status);
     const html = await response.text();
     contentEl.innerHTML = html;
+    setupPageImages();
     setActiveChapter(num);
     const heading = contentEl.querySelector('.chapter h1');
     document.title = heading ? (heading.textContent + ' - MySQL高级篇') : 'MySQL高级篇 - 尚硅谷宋红康';
