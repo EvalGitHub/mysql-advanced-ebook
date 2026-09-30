@@ -197,13 +197,6 @@ body {
 }
 
 /* Main content */
-.main {
-  margin-left: var(--sidebar-width);
-  padding: 40px 60px;
-  max-width: 1000px;
-  min-height: 100vh;
-}
-
 .chapter {
   margin-bottom: 60px;
   padding-bottom: 40px;
@@ -289,6 +282,9 @@ body {
     margin-left: 0;
     padding: 20px;
   }
+  .page-indicator {
+    left: 0;
+  }
   .menu-toggle {
     display: block;
   }
@@ -305,9 +301,9 @@ body {
 
 /* Page indicator */
 .page-indicator {
-  position: sticky;
+  position: fixed;
   bottom: 0;
-  left: 0;
+  left: var(--sidebar-width);
   right: 0;
   text-align: center;
   padding: 10px 16px;
@@ -317,8 +313,16 @@ body {
   border-top: 1px solid var(--border);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  margin-top: 20px;
   user-select: none;
+  z-index: 50;
+}
+
+.main {
+  margin-left: var(--sidebar-width);
+  padding: 40px 60px;
+  padding-bottom: 50px;
+  max-width: 1000px;
+  min-height: 100vh;
 }
 </style>
 </head>
@@ -369,8 +373,8 @@ body {
 
 <main class="main" id="content">
   <div class="loading">正在加载章节内容...</div>
-  <div class="page-indicator" id="pageIndicator" style="display:none;"></div>
 </main>
+<div class="page-indicator" id="pageIndicator" style="display:none;"></div>
 
 <script>
 const contentEl = document.getElementById('content');
