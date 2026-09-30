@@ -302,6 +302,24 @@ body {
   background: #ccc;
   border-radius: 3px;
 }
+
+/* Page indicator */
+.page-indicator {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--text-light);
+  background: rgba(255, 255, 255, 0.95);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  margin-top: 20px;
+  user-select: none;
+}
 </style>
 </head>
 <body>
@@ -351,6 +369,7 @@ body {
 
 <main class="main" id="content">
   <div class="loading">正在加载章节内容...</div>
+  <div class="page-indicator" id="pageIndicator" style="display:none;"></div>
 </main>
 
 <script>
@@ -367,6 +386,9 @@ let searchMode = 'toc';
 let searchIndex = null;
 let searchIndexLoading = false;
 let pageImageObserver = null;
+const pageIndicator = document.getElementById('pageIndicator');
+let totalPagesInChapter = 0;
+let pageScrollHandler = null;
 
 function activatePageImage(img, priority = 'auto') {
   if (!img.dataset.src) return;
@@ -565,6 +587,32 @@ function setActiveChapter(num) {
   });
 }
 
+function updatePageIndicator() {
+  if (totalPagesInChapter === 0) {
+    pageIndicator.style.display = 'none';
+    return;
+  }
+  const pages = contentEl.querySelectorAll('.page');
+  if (!pages.length) {
+    pageIndicator.style.display = 'none';
+    return;
+  }
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  const viewportTop = scrollTop + 100;
+  let currentPage = 1;
+  for (let i = 0; i < pages.length; i++) {
+    const rect = pages[i].getBoundingClientRect();
+    const pageTop = rect.top + scrollTop;
+    if (viewportTop >= pageTop) {
+      currentPage = i + 1;
+    } else {
+      break;
+    }
+  }
+  pageIndicator.textContent = '第 ' + currentPage + ' 页 / 共 ' + totalPagesInChapter + ' 页';
+  pageIndicator.style.display = '';
+}
+
 function chapterUrl(num) {
   return 'chapters/chapter-' + num + '.html';
 }
@@ -579,18 +627,30 @@ function getInitialChapterNum() {
 async function loadChapter(num) {
   if (!num) return;
   if (pageImageObserver) pageImageObserver.disconnect();
+  if (pageScrollHandler) {
+    window.removeEventListener('scroll', pageScrollHandler, { passive: true });
+    pageScrollHandler = null;
+  }
   contentEl.innerHTML = '<div class="loading">正在加载章节内容...</div>';
+  pageIndicator.style.display = 'none';
   try {
     const response = await fetch(chapterUrl(num));
     if (!response.ok) throw new Error('HTTP ' + response.status);
     const html = await response.text();
     contentEl.innerHTML = html;
+    const pages = contentEl.querySelectorAll('.page');
+    totalPagesInChapter = pages.length;
     setupPageImages();
     setActiveChapter(num);
     const heading = contentEl.querySelector('.chapter h1');
     document.title = heading ? (heading.textContent + ' - MySQL高级篇') : 'MySQL高级篇 - 尚硅谷宋红康';
     if (location.hash !== '#chapter-' + num) {
       history.replaceState(null, null, '#chapter-' + num);
+    }
+    if (totalPagesInChapter > 0) {
+      pageScrollHandler = () => updatePageIndicator();
+      window.addEventListener('scroll', pageScrollHandler, { passive: true });
+      updatePageIndicator();
     }
   } catch (err) {
     contentEl.innerHTML = '<div class="error">章节加载失败：' + err.message + '</div>';
