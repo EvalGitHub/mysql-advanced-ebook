@@ -196,6 +196,49 @@ body {
   font-size: 13px;
 }
 
+
+/* Hierarchical navigation */
+.nav-chapter {
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-chapter > .chapter-link {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.nav-chapter > .chapter-link.active {
+  color: var(--primary);
+  border-left-color: var(--primary);
+  background: rgba(26, 115, 232, 0.08);
+}
+
+.nav-sections {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-sections li a {
+  padding: 6px 20px 6px 36px;
+  font-size: 13px;
+  color: var(--text-light);
+  border-left: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.nav-sections li a:hover {
+  color: var(--primary);
+  background: rgba(26, 115, 232, 0.05);
+}
+
+.nav-sections li a.active {
+  color: var(--primary);
+  border-left-color: var(--primary);
+  background: rgba(26, 115, 232, 0.08);
+  font-weight: 500;
+}
+
 /* Main content */
 .chapter {
   margin-bottom: 60px;
@@ -345,25 +388,229 @@ body {
   </div>
   <div class="toc" id="tocPanel">
     <ul id="tocList">
-      <li><a href="#chapter-1" data-chapter="1">第01章_Linux下MySQL的安装与使用</a></li>
-<li><a href="#chapter-2" data-chapter="2">第02章_MySQL的数据目录</a></li>
-<li><a href="#chapter-3" data-chapter="3">第03章_用户与权限管理</a></li>
-<li><a href="#chapter-4" data-chapter="4">第04章_逻辑架构</a></li>
-<li><a href="#chapter-5" data-chapter="5">第05章_存储引擎</a></li>
-<li><a href="#chapter-6" data-chapter="6">第06章_索引的数据结构</a></li>
-<li><a href="#chapter-8" data-chapter="8">第08章_索引的创建与设计原则</a></li>
-<li><a href="#chapter-9" data-chapter="9">第09章_性能分析工具的使用</a></li>
-<li><a href="#chapter-10" data-chapter="10">第10章_索引优化与查询优化</a></li>
-<li><a href="#chapter-11" data-chapter="11">第11章_数据库的设计规范</a></li>
-<li><a href="#chapter-12" data-chapter="12">第12章_数据库其它调优策略</a></li>
-<li><a href="#chapter-13" data-chapter="13">第13章_事务基础知识</a></li>
-<li><a href="#chapter-14" data-chapter="14">第14章_MySQL事务日志</a></li>
-<li><a href="#chapter-15" data-chapter="15">第15章_锁</a></li>
-<li><a href="#chapter-16" data-chapter="16">第16章_多版本并发控制</a></li>
-<li><a href="#chapter-17" data-chapter="17">第17章_其它数据库日志</a></li>
-<li><a href="#chapter-18" data-chapter="18">第18章_主从复制</a></li>
-<li><a href="#chapter-19" data-chapter="19">第19章_数据库备份与恢复</a></li>
-<li><a href="#chapter-99" data-chapter="99">写在最后</a></li>
+      <li class="nav-chapter">
+        <a href="#chapter-1" data-chapter="1" class="chapter-link">第01章 Linux下MySQL的安装与使用</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-1" data-chapter="1" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-1" data-chapter="1" data-section="1. 安装前说明" class="section-link">1. 安装前说明</a></li>
+          <li><a href="#chapter-1" data-chapter="1" data-section="2. MySQL的Linux版安装" class="section-link">2. MySQL的Linux版安装</a></li>
+          <li><a href="#chapter-1" data-chapter="1" data-section="3. MySQL登录" class="section-link">3. MySQL登录</a></li>
+          <li><a href="#chapter-1" data-chapter="1" data-section="4. MySQL密码验证插件和组件" class="section-link">4. MySQL密码验证插件和组件</a></li>
+          <li><a href="#chapter-1" data-chapter="1" data-section="5. 字符集的相关操作" class="section-link">5. 字符集的相关操作</a></li>
+          <li><a href="#chapter-1" data-chapter="1" data-section="6. SQL大小写规范" class="section-link">6. SQL大小写规范</a></li>
+          <li><a href="#chapter-1" data-chapter="1" data-section="7. sql_mode的合理设置" class="section-link">7. sql_mode的合理设置</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-2" data-chapter="2" class="chapter-link">第02章 MySQL的数据目录</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-2" data-chapter="2" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-2" data-chapter="2" data-section="1. MySQL8的主要目录结构" class="section-link">1. MySQL8的主要目录结构</a></li>
+          <li><a href="#chapter-2" data-chapter="2" data-section="2. 数据库和文件系统的关系" class="section-link">2. 数据库和文件系统的关系</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-3" data-chapter="3" class="chapter-link">第03章 用户与权限管理</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-3" data-chapter="3" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-3" data-chapter="3" data-section="1. 用户管理" class="section-link">1. 用户管理</a></li>
+          <li><a href="#chapter-3" data-chapter="3" data-section="2. 权限管理" class="section-link">2. 权限管理</a></li>
+          <li><a href="#chapter-3" data-chapter="3" data-section="3. 权限表" class="section-link">3. 权限表</a></li>
+          <li><a href="#chapter-3" data-chapter="3" data-section="4. 访问控制权限" class="section-link">4. 访问控制权限</a></li>
+          <li><a href="#chapter-3" data-chapter="3" data-section="5. 角色管理" class="section-link">5. 角色管理</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-4" data-chapter="4" class="chapter-link">第04章 逻辑架构</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-4" data-chapter="4" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-4" data-chapter="4" data-section="1. 逻辑架构剖析" class="section-link">1. 逻辑架构剖析</a></li>
+          <li><a href="#chapter-4" data-chapter="4" data-section="2. SQL执行流程" class="section-link">2. SQL执行流程</a></li>
+          <li><a href="#chapter-4" data-chapter="4" data-section="3. 数据库缓冲池(buffer pool)" class="section-link">3. 数据库缓冲池(buffer pool)</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-5" data-chapter="5" class="chapter-link">第05章 存储引擎</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-5" data-chapter="5" data-section="第05章 存储引擎" class="section-link">第05章 存储引擎</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-6" data-chapter="6" class="chapter-link">第06章 索引的数据结构</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-6" data-chapter="6" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-6" data-chapter="6" data-section="1. 索引及其优缺点" class="section-link">1. 索引及其优缺点</a></li>
+          <li><a href="#chapter-6" data-chapter="6" data-section="2. InnoDB中索引" class="section-link">2. InnoDB中索引</a></li>
+          <li><a href="#chapter-6" data-chapter="6" data-section="3. MyISAM中的索引方案" class="section-link">3. MyISAM中的索引方案</a></li>
+          <li><a href="#chapter-6" data-chapter="6" data-section="4. 索引的代价" class="section-link">4. 索引的代价</a></li>
+          <li><a href="#chapter-6" data-chapter="6" data-section="5. MySQL数据结构选择的合理性" class="section-link">5. MySQL数据结构选择的合理性</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-7" data-chapter="7" class="chapter-link">第07章 InnoDB数据存储结构</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-7" data-chapter="7" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-7" data-chapter="7" data-section="1. 数据库的存储结构：页" class="section-link">1. 数据库的存储结构：页</a></li>
+          <li><a href="#chapter-7" data-chapter="7" data-section="2. 页的内部结构" class="section-link">2. 页的内部结构</a></li>
+          <li><a href="#chapter-7" data-chapter="7" data-section="3. InnoDB行格式（或记录格式）" class="section-link">3. InnoDB行格式（或记录格式）</a></li>
+          <li><a href="#chapter-7" data-chapter="7" data-section="4. 区、段和碎片区" class="section-link">4. 区、段和碎片区</a></li>
+          <li><a href="#chapter-7" data-chapter="7" data-section="5. 表空间" class="section-link">5. 表空间</a></li>
+          <li><a href="#chapter-7" data-chapter="7" data-section="附录：数据页加载的三种方式" class="section-link">附录：数据页加载的三种方式</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-8" data-chapter="8" class="chapter-link">第08章 索引的创建与设计原则</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-8" data-chapter="8" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-8" data-chapter="8" data-section="1. 索引的声明与使用" class="section-link">1. 索引的声明与使用</a></li>
+          <li><a href="#chapter-8" data-chapter="8" data-section="2. MySQL8.0索引新特性" class="section-link">2. MySQL8.0索引新特性</a></li>
+          <li><a href="#chapter-8" data-chapter="8" data-section="3. 索引的设计原则" class="section-link">3. 索引的设计原则</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-9" data-chapter="9" class="chapter-link">第09章 性能分析工具的使用</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-9" data-chapter="9" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-9" data-chapter="9" data-section="1. 数据库服务器的优化步骤" class="section-link">1. 数据库服务器的优化步骤</a></li>
+          <li><a href="#chapter-9" data-chapter="9" data-section="2. 查看系统性能参数" class="section-link">2. 查看系统性能参数</a></li>
+          <li><a href="#chapter-9" data-chapter="9" data-section="3. 统计SQL的查询成本：last_query_cost" class="section-link">3. 统计SQL的查询成本：last_query_cost</a></li>
+          <li><a href="#chapter-9" data-chapter="9" data-section="4. 定位执行慢的SQL：慢查询日志" class="section-link">4. 定位执行慢的SQL：慢查询日志</a></li>
+          <li><a href="#chapter-9" data-chapter="9" data-section="5.查看SQL执行成本：SHOW PROFILE" class="section-link">5.查看SQL执行成本：SHOW PROFILE</a></li>
+          <li><a href="#chapter-9" data-chapter="9" data-section="6. 分析查询语句：EXPLAIN" class="section-link">6. 分析查询语句：EXPLAIN</a></li>
+          <li><a href="#chapter-9" data-chapter="9" data-section="7. EXPLAIN的进一步使用" class="section-link">7. EXPLAIN的进一步使用</a></li>
+          <li><a href="#chapter-9" data-chapter="9" data-section="8. 分析优化器执行计划：trace" class="section-link">8. 分析优化器执行计划：trace</a></li>
+          <li><a href="#chapter-9" data-chapter="9" data-section="9. MySQL监控分析视图-sys schema" class="section-link">9. MySQL监控分析视图-sys schema</a></li>
+          <li><a href="#chapter-9" data-chapter="9" data-section="10. 小结" class="section-link">10. 小结</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-10" data-chapter="10" class="chapter-link">第10章 索引优化与查询优化</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-10" data-chapter="10" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-10" data-chapter="10" data-section="1. 数据准备" class="section-link">1. 数据准备</a></li>
+          <li><a href="#chapter-10" data-chapter="10" data-section="2. 索引失效案例" class="section-link">2. 索引失效案例</a></li>
+          <li><a href="#chapter-10" data-chapter="10" data-section="3. 关联查询优化" class="section-link">3. 关联查询优化</a></li>
+          <li><a href="#chapter-10" data-chapter="10" data-section="4. 子查询优化" class="section-link">4. 子查询优化</a></li>
+          <li><a href="#chapter-10" data-chapter="10" data-section="5. 排序优化" class="section-link">5. 排序优化</a></li>
+          <li><a href="#chapter-10" data-chapter="10" data-section="6. GROUP BY优化" class="section-link">6. GROUP BY优化</a></li>
+          <li><a href="#chapter-10" data-chapter="10" data-section="7. 优化分页查询" class="section-link">7. 优化分页查询</a></li>
+          <li><a href="#chapter-10" data-chapter="10" data-section="8. 优先考虑覆盖索引" class="section-link">8. 优先考虑覆盖索引</a></li>
+          <li><a href="#chapter-10" data-chapter="10" data-section="9. 前缀索引" class="section-link">9. 前缀索引</a></li>
+          <li><a href="#chapter-10" data-chapter="10" data-section="10. 索引条件下推" class="section-link">10. 索引条件下推</a></li>
+          <li><a href="#chapter-10" data-chapter="10" data-section="11. 普通索引 VS 唯一索引" class="section-link">11. 普通索引 VS 唯一索引</a></li>
+          <li><a href="#chapter-10" data-chapter="10" data-section="12. 其它查询优化策略" class="section-link">12. 其它查询优化策略</a></li>
+          <li><a href="#chapter-10" data-chapter="10" data-section="13. 淘宝数据库，主键如何设计的？" class="section-link">13. 淘宝数据库，主键如何设计的？</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-11" data-chapter="11" class="chapter-link">第11章 数据库的设计规范</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-11" data-chapter="11" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-11" data-chapter="11" data-section="1. 为什么需要数据库设计" class="section-link">1. 为什么需要数据库设计</a></li>
+          <li><a href="#chapter-11" data-chapter="11" data-section="2. 范 式" class="section-link">2. 范 式</a></li>
+          <li><a href="#chapter-11" data-chapter="11" data-section="3. 反范式化" class="section-link">3. 反范式化</a></li>
+          <li><a href="#chapter-11" data-chapter="11" data-section="4. BCNF(巴斯范式)" class="section-link">4. BCNF(巴斯范式)</a></li>
+          <li><a href="#chapter-11" data-chapter="11" data-section="5. 第四范式" class="section-link">5. 第四范式</a></li>
+          <li><a href="#chapter-11" data-chapter="11" data-section="6. 第五范式、域键范式" class="section-link">6. 第五范式、域键范式</a></li>
+          <li><a href="#chapter-11" data-chapter="11" data-section="7. 实战案例" class="section-link">7. 实战案例</a></li>
+          <li><a href="#chapter-11" data-chapter="11" data-section="8. ER模型" class="section-link">8. ER模型</a></li>
+          <li><a href="#chapter-11" data-chapter="11" data-section="9. 数据表的设计原则" class="section-link">9. 数据表的设计原则</a></li>
+          <li><a href="#chapter-11" data-chapter="11" data-section="10. 数据库对象编写建议" class="section-link">10. 数据库对象编写建议</a></li>
+          <li><a href="#chapter-11" data-chapter="11" data-section="11. PowerDesigner的使用" class="section-link">11. PowerDesigner的使用</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-12" data-chapter="12" class="chapter-link">第12章 数据库其它调优策略</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-12" data-chapter="12" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-12" data-chapter="12" data-section="1. 数据库调优的措施" class="section-link">1. 数据库调优的措施</a></li>
+          <li><a href="#chapter-12" data-chapter="12" data-section="2. 优化MySQL服务器" class="section-link">2. 优化MySQL服务器</a></li>
+          <li><a href="#chapter-12" data-chapter="12" data-section="3. 优化数据库结构" class="section-link">3. 优化数据库结构</a></li>
+          <li><a href="#chapter-12" data-chapter="12" data-section="4. 大表优化" class="section-link">4. 大表优化</a></li>
+          <li><a href="#chapter-12" data-chapter="12" data-section="5. 其它调优策略" class="section-link">5. 其它调优策略</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-13" data-chapter="13" class="chapter-link">第13章 事务基础知识</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-13" data-chapter="13" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-13" data-chapter="13" data-section="1. 数据库事务概述" class="section-link">1. 数据库事务概述</a></li>
+          <li><a href="#chapter-13" data-chapter="13" data-section="2. 如何使用事务" class="section-link">2. 如何使用事务</a></li>
+          <li><a href="#chapter-13" data-chapter="13" data-section="3. 事务隔离级别" class="section-link">3. 事务隔离级别</a></li>
+          <li><a href="#chapter-13" data-chapter="13" data-section="4. 事务的常见分类" class="section-link">4. 事务的常见分类</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-14" data-chapter="14" class="chapter-link">第14章 MySQL事务日志</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-14" data-chapter="14" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-14" data-chapter="14" data-section="1. Redo日志" class="section-link">1. Redo日志</a></li>
+          <li><a href="#chapter-14" data-chapter="14" data-section="2. Undo日志" class="section-link">2. Undo日志</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-15" data-chapter="15" class="chapter-link">第15章 锁</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-15" data-chapter="15" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-15" data-chapter="15" data-section="1. 概述" class="section-link">1. 概述</a></li>
+          <li><a href="#chapter-15" data-chapter="15" data-section="2. MySQL并发事务访问相同记录" class="section-link">2. MySQL并发事务访问相同记录</a></li>
+          <li><a href="#chapter-15" data-chapter="15" data-section="3. 锁的不同角度分类" class="section-link">3. 锁的不同角度分类</a></li>
+          <li><a href="#chapter-15" data-chapter="15" data-section="4. 锁的内存结构" class="section-link">4. 锁的内存结构</a></li>
+          <li><a href="#chapter-15" data-chapter="15" data-section="5. 锁监控" class="section-link">5. 锁监控</a></li>
+          <li><a href="#chapter-15" data-chapter="15" data-section="6. 增删改查语句设置的锁（InnoDB）" class="section-link">6. 增删改查语句设置的锁（InnoDB）</a></li>
+          <li><a href="#chapter-15" data-chapter="15" data-section="7. 附录" class="section-link">7. 附录</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-16" data-chapter="16" class="chapter-link">第16章 多版本并发控制</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-16" data-chapter="16" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-16" data-chapter="16" data-section="1. 什么是MVCC" class="section-link">1. 什么是MVCC</a></li>
+          <li><a href="#chapter-16" data-chapter="16" data-section="2. 快照读与当前读" class="section-link">2. 快照读与当前读</a></li>
+          <li><a href="#chapter-16" data-chapter="16" data-section="3. 复习" class="section-link">3. 复习</a></li>
+          <li><a href="#chapter-16" data-chapter="16" data-section="4. MVCC实现原理之ReadView" class="section-link">4. MVCC实现原理之ReadView</a></li>
+          <li><a href="#chapter-16" data-chapter="16" data-section="5. 举例说明" class="section-link">5. 举例说明</a></li>
+          <li><a href="#chapter-16" data-chapter="16" data-section="6. 总结" class="section-link">6. 总结</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-17" data-chapter="17" class="chapter-link">第17章 其它数据库日志</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-17" data-chapter="17" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-17" data-chapter="17" data-section="1. MySQL支持的日志" class="section-link">1. MySQL支持的日志</a></li>
+          <li><a href="#chapter-17" data-chapter="17" data-section="2. 慢查询日志(slow query log)" class="section-link">2. 慢查询日志(slow query log)</a></li>
+          <li><a href="#chapter-17" data-chapter="17" data-section="3. 通用查询日志(general query log)" class="section-link">3. 通用查询日志(general query log)</a></li>
+          <li><a href="#chapter-17" data-chapter="17" data-section="4. 错误日志(error log)" class="section-link">4. 错误日志(error log)</a></li>
+          <li><a href="#chapter-17" data-chapter="17" data-section="5. 二进制日志(bin log)" class="section-link">5. 二进制日志(bin log)</a></li>
+          <li><a href="#chapter-17" data-chapter="17" data-section="6. 再谈二进制日志(binlog)" class="section-link">6. 再谈二进制日志(binlog)</a></li>
+          <li><a href="#chapter-17" data-chapter="17" data-section="7. 中继日志(relay log)" class="section-link">7. 中继日志(relay log)</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-18" data-chapter="18" class="chapter-link">第18章 主从复制</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-18" data-chapter="18" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-18" data-chapter="18" data-section="1. 主从复制概述" class="section-link">1. 主从复制概述</a></li>
+          <li><a href="#chapter-18" data-chapter="18" data-section="2. 主从复制的原理" class="section-link">2. 主从复制的原理</a></li>
+          <li><a href="#chapter-18" data-chapter="18" data-section="3. 一主一从架构搭建" class="section-link">3. 一主一从架构搭建</a></li>
+          <li><a href="#chapter-18" data-chapter="18" data-section="4. 同步数据一致性问题" class="section-link">4. 同步数据一致性问题</a></li>
+          <li><a href="#chapter-18" data-chapter="18" data-section="5. 知识延伸" class="section-link">5. 知识延伸</a></li>
+        </ul>
+      </li>
+      <li class="nav-chapter">
+        <a href="#chapter-19" data-chapter="19" class="chapter-link">第19章 数据库备份与恢复</a>
+        <ul class="nav-sections">
+          <li><a href="#chapter-19" data-chapter="19" data-section="本章导读" class="section-link">本章导读</a></li>
+          <li><a href="#chapter-19" data-chapter="19" data-section="1. 物理备份与逻辑备份" class="section-link">1. 物理备份与逻辑备份</a></li>
+          <li><a href="#chapter-19" data-chapter="19" data-section="2. mysqldump实现逻辑备份" class="section-link">2. mysqldump实现逻辑备份</a></li>
+          <li><a href="#chapter-19" data-chapter="19" data-section="3. mysql命令恢复数据" class="section-link">3. mysql命令恢复数据</a></li>
+          <li><a href="#chapter-19" data-chapter="19" data-section="4. MyISAM存储引擎类型的表物理备份和恢复" class="section-link">4. MyISAM存储引擎类型的表物理备份和恢复</a></li>
+          <li><a href="#chapter-19" data-chapter="19" data-section="5.InnoDB存储引擎类型的表的物理导入导出" class="section-link">5.InnoDB存储引擎类型的表的物理导入导出</a></li>
+          <li><a href="#chapter-19" data-chapter="19" data-section="6. 表的导出与导入" class="section-link">6. 表的导出与导入</a></li>
+          <li><a href="#chapter-19" data-chapter="19" data-section="7. 数据库的迁移" class="section-link">7. 数据库的迁移</a></li>
+          <li><a href="#chapter-19" data-chapter="19" data-section="8. 误删数据的预防方案和恢复方案" class="section-link">8. 误删数据的预防方案和恢复方案</a></li>
+        </ul>
+      </li>
     </ul>
   </div>
   <div class="search-results" id="searchResultsPanel" style="display:none;">
@@ -378,7 +625,7 @@ body {
 
 <script>
 const contentEl = document.getElementById('content');
-const tocLinks = document.querySelectorAll('.toc a');
+const tocLinks = document.querySelectorAll('.chapter-link');
 const searchInput = document.getElementById('searchInput');
 const searchStatus = document.getElementById('searchStatus');
 const tocPanel = document.getElementById('tocPanel');
@@ -586,9 +833,12 @@ async function onSearchResultClick(chapterNum, pageNum) {
 }
 
 function setActiveChapter(num) {
-  tocLinks.forEach(link => {
+  // Only highlight the chapter-link, NOT section links
+  document.querySelectorAll('.chapter-link').forEach(link => {
     link.classList.toggle('active', link.dataset.chapter === String(num));
   });
+  // Clear all section active states
+  document.querySelectorAll('.section-link.active').forEach(a => a.classList.remove('active'));
 }
 
 function updatePageIndicator() {
@@ -661,12 +911,25 @@ async function loadChapter(num) {
   }
 }
 
+// Chapter link handlers
 tocLinks.forEach(link => {
   link.addEventListener('click', (e) => {
     e.preventDefault();
     const num = parseInt(link.dataset.chapter, 10);
     loadChapter(num);
     document.querySelector('.sidebar').classList.remove('open');
+  });
+});
+
+// Section link handlers - load chapter then scroll to section heading in page images
+document.querySelectorAll('.section-link').forEach(link => {
+  link.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const num = parseInt(link.dataset.chapter, 10);
+    const sectionTitle = link.dataset.section;
+    await loadChapter(num);
+    // Scroll to top of chapter (sections are embedded in page images)
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 });
 
